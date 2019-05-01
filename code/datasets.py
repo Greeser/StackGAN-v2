@@ -1,7 +1,7 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+
+
+
+
 
 
 import torch.utils.data as data
@@ -25,7 +25,7 @@ import string
 import sys
 import torch
 if sys.version_info[0] == 2:
-    import cPickle as pickle
+    import pickle as pickle
 else:
     import pickle
 
@@ -72,8 +72,7 @@ class ImageFolder(data.Dataset):
         classes, class_to_idx = self.find_classes(root, custom_classes)
         imgs = self.make_dataset(classes, class_to_idx)
         if len(imgs) == 0:
-            raise(RuntimeError("Found 0 images in subfolders of: " + root + "\n"
-                               "Supported image extensions are: " + ",".join(IMG_EXTENSIONS)))
+            raise RuntimeError
 
         self.root = root
         self.imgs = imgs
@@ -227,7 +226,7 @@ class TextDataset(data.Dataset):
         #
         filename_bbox = {img_file[:-4]: [] for img_file in filenames}
         numImgs = len(filenames)
-        for i in xrange(0, numImgs):
+        for i in range(0, numImgs):
             # bbox = [x-left, y-top, width, height]
             bbox = df_bounding_boxes.iloc[i][1:].tolist()
 
@@ -239,7 +238,7 @@ class TextDataset(data.Dataset):
     def load_all_captions(self):
         def load_captions(caption_name):  # self,
             cap_path = caption_name
-            with open(cap_path, "r") as f:
+            with open(cap_path, "rb") as f:
                 captions = f.read().decode('utf8').split('\n')
             captions = [cap.replace("\ufffd\ufffd", " ")
                         for cap in captions if len(cap) > 0]
@@ -261,7 +260,7 @@ class TextDataset(data.Dataset):
             embedding_filename = '/skip-thought-embeddings.pickle'
 
         with open(data_dir + embedding_filename, 'rb') as f:
-            embeddings = pickle.load(f)
+            embeddings = pickle.load(f, encoding='bytes')
             embeddings = np.array(embeddings)
             # embedding_shape = [embeddings.shape[-1]]
             print('embeddings: ', embeddings.shape)
@@ -270,7 +269,7 @@ class TextDataset(data.Dataset):
     def load_class_id(self, data_dir, total_num):
         if os.path.isfile(data_dir + '/class_info.pickle'):
             with open(data_dir + '/class_info.pickle', 'rb') as f:
-                class_id = pickle.load(f)
+                class_id = pickle.load(f, encoding='bytes')
         else:
             class_id = np.arange(total_num)
         return class_id
