@@ -203,6 +203,8 @@ def save_img_results(imgs_tcpu, fake_imgs, num_imgs,
     real_img_set = np.transpose(real_img_set, (1, 2, 0))
     real_img_set = real_img_set * 255
     real_img_set = real_img_set.astype(np.uint8)
+    print('shape real_img_set ', real_img_set.shape)
+    print('shape real_img_set with grid ', vutils.make_grid(torch.tensor(real_img_set)).shape)
     sup_real_img = summary.image('real_img', vutils.make_grid(torch.tensor(real_img_set)))
     summary_writer.add_summary(sup_real_img, count)
 
