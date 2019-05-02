@@ -16,8 +16,8 @@ from copy import deepcopy
 from miscc.config import cfg
 from miscc.utils import mkdir_p
 
-from tensorboardX import summary
-from tensorboardX import FileWriter
+from tensorboard import summary
+from tensorboard import FileWriter
 
 from model import G_NET, D_NET64, D_NET128, D_NET256, D_NET512, D_NET1024, INCEPTION_V3
 
@@ -205,7 +205,7 @@ def save_img_results(imgs_tcpu, fake_imgs, num_imgs,
     real_img_set = real_img_set.astype(np.uint8)
     print('shape real_img_set ', real_img_set.shape)
     print('shape real_img_set with grid ', vutils.make_grid(torch.tensor(real_img_set)).shape)
-    sup_real_img = summary.image('real_img', vutils.make_grid(torch.tensor(real_img_set)))
+    sup_real_img = summary.image('real_img', real_img_set)
     summary_writer.add_summary(sup_real_img, count)
 
     for i in range(num_imgs):
