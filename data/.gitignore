@@ -1,3 +1,4 @@
-*
+*.zip
+*.tgz
 !README.md
 !.gitignore
