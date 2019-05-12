@@ -103,6 +103,7 @@ if __name__ == "__main__":
         if cfg.DATASET_NAME == 'birds':
             bshuffle = False
             split_dir = 'test'
+	#set split dir test if not birds
 
     # Get data loader
     imsize = cfg.TREE.BASE_SIZE * (2 ** (cfg.TREE.BRANCH_NUM-1))

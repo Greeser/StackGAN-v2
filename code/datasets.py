@@ -1,9 +1,3 @@
-
-
-
-
-
-
 import torch.utils.data as data
 import torchvision.transforms as transforms
 from PIL import Image
@@ -186,30 +180,30 @@ class TextDataset(data.Dataset):
         self.norm = transforms.Compose([
             transforms.ToTensor(),
             transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-        self.target_transform = target_transform
+        self.target_transform = target_transform #image transform
 
         self.imsize = []
-        for i in range(cfg.TREE.BRANCH_NUM):
+        for i in range(cfg.TREE.BRANCH_NUM): # 2 or 3
             self.imsize.append(base_size)
             base_size = base_size * 2
 
         self.data = []
         self.data_dir = data_dir
         if data_dir.find('birds') != -1:
-            self.bbox = self.load_bbox()
+            self.bbox = self.load_bbox() #magic bbox
         else:
-            self.bbox = None
-        split_dir = os.path.join(data_dir, split)
+            self.bbox = None # zappos dont have =(
+        split_dir = os.path.join(data_dir, split) #either train or test
 
-        self.filenames = self.load_filenames(split_dir)
+        self.filenames = self.load_filenames(split_dir) #TODO check!
         self.embeddings = self.load_embedding(split_dir, embedding_type)
-        self.class_id = self.load_class_id(split_dir, len(self.filenames))
+        self.class_id = self.load_class_id(split_dir, len(self.filenames)) #??
         self.captions = self.load_all_captions()
 
         if cfg.TRAIN.FLAG:
-            self.iterator = self.prepair_training_pairs
+            self.iterator = self.prepair_training_pairs #this is a func, generator
         else:
-            self.iterator = self.prepair_test_pairs
+            self.iterator = self.prepair_test_pairs #this is also
 
     def load_bbox(self):
         data_dir = self.data_dir
@@ -275,7 +269,7 @@ class TextDataset(data.Dataset):
         return class_id
 
     def load_filenames(self, data_dir):
-        filepath = os.path.join(data_dir, 'filenames.pickle')
+        filepath = os.path.join(data_dir, 'filenames.pickle')  #TODO check!
         with open(filepath, 'rb') as f:
             filenames = pickle.load(f)
         print('Load filenames from: %s (%d)' % (filepath, len(filenames)))
@@ -290,13 +284,13 @@ class TextDataset(data.Dataset):
             bbox = None
             data_dir = self.data_dir
         # captions = self.captions[key]
-        embeddings = self.embeddings[index, :, :]
+        embeddings = self.embeddings[index, :, :] #TODO why 3dim x, 10, 1024
         img_name = '%s/images/%s.jpg' % (data_dir, key)
         imgs = get_imgs(img_name, self.imsize,
                         bbox, self.transform, normalize=self.norm)
 
         wrong_ix = random.randint(0, len(self.filenames) - 1)
-        if(self.class_id[index] == self.class_id[wrong_ix]):
+        if(self.class_id[index] == self.class_id[wrong_ix]): #TODO nice try
             wrong_ix = random.randint(0, len(self.filenames) - 1)
         wrong_key = self.filenames[wrong_ix]
         if self.bbox is not None:
@@ -308,8 +302,8 @@ class TextDataset(data.Dataset):
         wrong_imgs = get_imgs(wrong_img_name, self.imsize,
                               wrong_bbox, self.transform, normalize=self.norm)
 
-        embedding_ix = random.randint(0, embeddings.shape[0] - 1)
-        embedding = embeddings[embedding_ix, :]
+        embedding_ix = random.randint(0, embeddings.shape[0] - 1) #TODO
+        embedding = embeddings[embedding_ix, :] #what the magic
         if self.target_transform is not None:
             embedding = self.target_transform(embedding)
 
@@ -324,7 +318,7 @@ class TextDataset(data.Dataset):
             bbox = None
             data_dir = self.data_dir
         # captions = self.captions[key]
-        embeddings = self.embeddings[index, :, :]
+        embeddings = self.embeddings[index, :, :] 
         img_name = '%s/images/%s.jpg' % (data_dir, key)
         imgs = get_imgs(img_name, self.imsize,
                         bbox, self.transform, normalize=self.norm)
