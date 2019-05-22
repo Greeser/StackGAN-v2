@@ -1,3 +1,38 @@
+### Zappos dataset
+
+Zappos dir
+
+```bash
+zappos
+├── images
+│   ├── Boots
+│   ├── Sandals
+│   ├── Shoes
+│   └── Slippers
+├── test
+│   ├── class_info.pickle
+│   ├── filenames.pickle
+│   └── simple-embeddings.pickle
+└── train
+    ├── class_info.pickle
+    ├── filenames.pickle
+    └── simple-embeddings.pickle
+```
+
+### Glove dir
+```
+glove_6B/
+├── glove.6B.100d.txt
+├── glove.6B.200d.txt
+├── glove.6B.300d.txt
+├── glove.6B.50d.dat
+│   ├── __attrs__
+│   ├── data
+│   └── meta
+├── glove.6B.50d_idx.pkl
+├── glove.6B.50d.txt
+└── glove.6B.50d_words.pkl
+```
 # StackGAN-v2
 
 **Data**
