@@ -128,6 +128,7 @@ class CA_NET(nn.Module):
         return eps.mul(std).add_(mu)
 
     def forward(self, text_embedding):
+        #text_embedding = text_embedding.float()
         mu, logvar = self.encode(text_embedding)
         c_code = self.reparametrize(mu, logvar)
         return c_code, mu, logvar

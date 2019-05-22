@@ -103,6 +103,9 @@ if __name__ == "__main__":
         if cfg.DATASET_NAME == 'birds':
             bshuffle = False
             split_dir = 'test'
+        if cfg.DATASET_NAME == 'zappos':
+            bshuffle = False
+            split_dir = 'test'
 	#set split dir test if not birds
 
     # Get data loader
@@ -124,7 +127,13 @@ if __name__ == "__main__":
                               transform=image_transform)
     elif cfg.GAN.B_CONDITION:  # text to image task
         from datasets import TextDataset
-        dataset = TextDataset(cfg.DATA_DIR, split_dir,
+        if cfg.DATASET_NAME == 'zappos':
+            dataset = TextDataset(cfg.DATA_DIR, split_dir,
+                              base_size=cfg.TREE.BASE_SIZE,
+                              embedding_type = 'simple',
+                              transform=image_transform)
+        else:
+            dataset = TextDataset(cfg.DATA_DIR, split_dir,
                               base_size=cfg.TREE.BASE_SIZE,
                               transform=image_transform)
     assert dataset

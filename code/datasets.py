@@ -180,7 +180,7 @@ class TextDataset(data.Dataset):
         self.norm = transforms.Compose([
             transforms.ToTensor(),
             transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-        self.target_transform = target_transform #image transform
+        self.target_transform = target_transform 
 
         self.imsize = []
         for i in range(cfg.TREE.BRANCH_NUM): # 2 or 3
@@ -198,7 +198,8 @@ class TextDataset(data.Dataset):
         self.filenames = self.load_filenames(split_dir) #TODO check!
         self.embeddings = self.load_embedding(split_dir, embedding_type)
         self.class_id = self.load_class_id(split_dir, len(self.filenames)) #??
-        self.captions = self.load_all_captions()
+        if not embedding_type == 'simple':
+            self.captions = self.load_all_captions()
 
         if cfg.TRAIN.FLAG:
             self.iterator = self.prepair_training_pairs #this is a func, generator
@@ -252,6 +253,8 @@ class TextDataset(data.Dataset):
             embedding_filename = '/char-CNN-GRU-embeddings.pickle'
         elif embedding_type == 'skip-thought':
             embedding_filename = '/skip-thought-embeddings.pickle'
+        elif embedding_type == 'simple':
+            embedding_filename = '/simple-embeddings.pickle'
 
         with open(data_dir + embedding_filename, 'rb') as f:
             embeddings = pickle.load(f, encoding='bytes')
@@ -285,7 +288,10 @@ class TextDataset(data.Dataset):
             data_dir = self.data_dir
         # captions = self.captions[key]
         embeddings = self.embeddings[index, :, :] #TODO why 3dim x, 10, 1024
-        img_name = '%s/images/%s.jpg' % (data_dir, key)
+        if self.data_dir.find('zappos'):
+            img_name = os.path.join(data_dir, 'images', key)
+        else:
+            img_name = '%s/images/%s.jpg' % (data_dir, key)
         imgs = get_imgs(img_name, self.imsize,
                         bbox, self.transform, normalize=self.norm)
 
@@ -297,8 +303,13 @@ class TextDataset(data.Dataset):
             wrong_bbox = self.bbox[wrong_key]
         else:
             wrong_bbox = None
-        wrong_img_name = '%s/images/%s.jpg' % \
+
+        if self.data_dir.find('zappos'):
+            wrong_img_name = os.path.join(data_dir, 'images', wrong_key)
+        else:
+            wrong_img_name = '%s/images/%s.jpg' % \
             (data_dir, wrong_key)
+
         wrong_imgs = get_imgs(wrong_img_name, self.imsize,
                               wrong_bbox, self.transform, normalize=self.norm)
 
