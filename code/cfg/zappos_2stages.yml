@@ -3,7 +3,7 @@ CONFIG_NAME: '2stages'
 DATASET_NAME: 'zappos'
 EMBEDDING_TYPE: 'simple'
 DATA_DIR: '../data/zappos'
-GPU_ID: '-1'
+GPU_ID: '0'
 WORKERS: 4
 
 
