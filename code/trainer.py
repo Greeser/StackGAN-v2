@@ -22,7 +22,6 @@ from tensorboard import FileWriter
 from model import G_NET, D_NET64, D_NET128, D_NET256, D_NET512, D_NET1024, INCEPTION_V3
 
 
-
 # ################## Shared functions ###################
 def compute_mean_covariance(img):
     batch_size = img.size(0)
@@ -667,6 +666,7 @@ class condGANTrainer(object):
     def train(self):
         self.netG, self.netsD, self.num_Ds,\
             self.inception_model, start_count = load_network(self.gpus)
+        print("Models loaded")
         avg_param_G = copy_G_params(self.netG)
 
         self.optimizerG, self.optimizersD = \
@@ -699,9 +699,17 @@ class condGANTrainer(object):
         count = start_count
         start_epoch = start_count // (self.num_batches)
         for epoch in range(start_epoch, self.max_epoch):
+            print("Epoch {:d} started".format(epoch))
             start_t = time.time()
+            start_iters = time.time()
+            N_TOTAL  = len(self.data_loader)
 
             for step, data in enumerate(self.data_loader, 0):
+                if step % 100 == 0:
+                    curr_time = time.time()
+                    print("Itteration {:d}/{:d}\n Time for 100 steps:{:.2f}\n Total time:{:.2f}".format(step, N_TOTAL, curr_time - start_iters, curr_time-start_t))
+                    start_iters = time.time()
+
                 #######################################################
                 # (0) Prepare training data
                 ######################################################
@@ -711,6 +719,7 @@ class condGANTrainer(object):
                 #######################################################
                 # (1) Generate fake images
                 ######################################################
+                #print("Data prepeared!")
                 noise.data.normal_(0, 1)
                 self.fake_imgs, self.mu, self.logvar = \
                     self.netG(noise, self.txt_embedding)
@@ -718,6 +727,7 @@ class condGANTrainer(object):
                 #######################################################
                 # (2) Update D network
                 ######################################################
+                #print("Fake image generated")
                 errD_total = 0
                 for i in range(self.num_Ds):
                     errD = self.train_Dnet(i, count)
@@ -726,6 +736,7 @@ class condGANTrainer(object):
                 #######################################################
                 # (3) Update G network: maximize log(D(G(z)))
                 ######################################################
+                #print("D network updated")
                 kl_loss, errG_total = self.train_Gnet(count)
                 for p, avg_p in zip(self.netG.parameters(), avg_param_G):
                     avg_p.mul_(0.999).add_(0.001, p.data)
@@ -734,6 +745,7 @@ class condGANTrainer(object):
                 pred = self.inception_model(self.fake_imgs[-1].detach())
                 predictions.append(pred.data.cpu().numpy())
 
+                #print("G network uddated")
                 if count % 100 == 0:
                     summary_D = summary.scalar('D_loss', errD_total.data)
                     summary_G = summary.scalar('G_loss', errG_total.data)

@@ -1,0 +1,2289 @@
+Using config:
+{'CONFIG_NAME': '3stages',
+ 'CUDA': True,
+ 'DATASET_NAME': 'zappos',
+ 'DATA_DIR': '../data/zappos',
+ 'EMBEDDING_TYPE': 'simple',
+ 'GAN': {'B_CONDITION': True,
+         'DF_DIM': 64,
+         'EMBEDDING_DIM': 128,
+         'GF_DIM': 64,
+         'NETWORK_TYPE': 'default',
+         'R_NUM': 2,
+         'Z_DIM': 100},
+ 'GPU_ID': '0',
+ 'TEST': {'B_EXAMPLE': True, 'SAMPLE_NUM': 30000},
+ 'TEXT': {'DIMENSION': 1024},
+ 'TRAIN': {'BATCH_SIZE': 24,
+           'COEFF': {'COLOR_LOSS': 0.0, 'KL': 2.0, 'UNCOND_LOSS': 1.0},
+           'DISCRIMINATOR_LR': 0.0002,
+           'FLAG': True,
+           'GENERATOR_LR': 0.0002,
+           'MAX_EPOCH': 50,
+           'NET_D': '',
+           'NET_G': '',
+           'SNAPSHOT_INTERVAL': 2000,
+           'VIS_COUNT': 64},
+ 'TREE': {'BASE_SIZE': 64, 'BRANCH_NUM': 3},
+ 'WORKERS': 4}
+Load filenames from: ../data/zappos/train/filenames.pickle (37545)
+embeddings:  (37545, 10, 1024)
+DataParallel(
+  (module): G_NET(
+    (ca_net): CA_NET(
+      (fc): Linear(in_features=1024, out_features=512, bias=True)
+      (relu): GLU()
+    )
+    (h_net1): INIT_STAGE_G(
+      (fc): Sequential(
+        (0): Linear(in_features=228, out_features=32768, bias=False)
+        (1): BatchNorm1d(32768, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): GLU()
+      )
+      (upsample1): Sequential(
+        (0): Upsample(scale_factor=2.0, mode=nearest)
+        (1): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (2): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (3): GLU()
+      )
+      (upsample2): Sequential(
+        (0): Upsample(scale_factor=2.0, mode=nearest)
+        (1): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (3): GLU()
+      )
+      (upsample3): Sequential(
+        (0): Upsample(scale_factor=2.0, mode=nearest)
+        (1): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (3): GLU()
+      )
+      (upsample4): Sequential(
+        (0): Upsample(scale_factor=2.0, mode=nearest)
+        (1): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (3): GLU()
+      )
+    )
+    (img_net1): GET_IMAGE_G(
+      (img): Sequential(
+        (0): Conv2d(64, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (1): Tanh()
+      )
+    )
+    (h_net2): NEXT_STAGE_G(
+      (jointConv): Sequential(
+        (0): Conv2d(192, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): GLU()
+      )
+      (residual): Sequential(
+        (0): ResBlock(
+          (block): Sequential(
+            (0): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): GLU()
+            (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (4): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          )
+        )
+        (1): ResBlock(
+          (block): Sequential(
+            (0): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): GLU()
+            (3): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (4): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          )
+        )
+      )
+      (upsample): Sequential(
+        (0): Upsample(scale_factor=2.0, mode=nearest)
+        (1): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (3): GLU()
+      )
+    )
+    (img_net2): GET_IMAGE_G(
+      (img): Sequential(
+        (0): Conv2d(32, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (1): Tanh()
+      )
+    )
+    (h_net3): NEXT_STAGE_G(
+      (jointConv): Sequential(
+        (0): Conv2d(160, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): GLU()
+      )
+      (residual): Sequential(
+        (0): ResBlock(
+          (block): Sequential(
+            (0): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): GLU()
+            (3): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (4): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          )
+        )
+        (1): ResBlock(
+          (block): Sequential(
+            (0): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (2): GLU()
+            (3): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+            (4): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          )
+        )
+      )
+      (upsample): Sequential(
+        (0): Upsample(scale_factor=2.0, mode=nearest)
+        (1): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (2): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (3): GLU()
+      )
+    )
+    (img_net3): GET_IMAGE_G(
+      (img): Sequential(
+        (0): Conv2d(16, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (1): Tanh()
+      )
+    )
+  )
+)
+# of netsD 3
+Load pretrained model from  https://download.pytorch.org/models/inception_v3_google-1a9a5a14.pth
+Models loaded
+Epoch 0 started
+/gpfs/hpc/home/domnich/StackGAN-v2/code/miscc/config.py:103: YAMLLoadWarning: calling yaml.load() without Loader=... is deprecated, as the default Loader is unsafe. Please read https://msg.pyyaml.org/load for full details.
+  yaml_cfg = edict(yaml.load(f))
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpc/home/domnich/StackGAN-v2/code/trainer.py:63: UserWarning: nn.init.orthogonal is now deprecated in favor of nn.init.orthogonal_.
+  nn.init.orthogonal(m.weight.data, 1.0)
+/gpfs/hpc/home/domnich/StackGAN-v2/code/trainer.py:58: UserWarning: nn.init.orthogonal is now deprecated in favor of nn.init.orthogonal_.
+  nn.init.orthogonal(m.weight.data, 1.0)
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:1.07
+ Total time:1.07
+Itteration 100/1564
+ Time for 100 steps:59.96
+ Total time:61.03
+Itteration 200/1564
+ Time for 100 steps:51.99
+ Total time:113.01
+Itteration 300/1564
+ Time for 100 steps:52.00
+ Total time:165.02
+Itteration 400/1564
+ Time for 100 steps:52.04
+ Total time:217.06
+Itteration 500/1564
+ Time for 100 steps:52.06
+ Total time:269.11
+Itteration 600/1564
+ Time for 100 steps:52.03
+ Total time:321.14
+Itteration 700/1564
+ Time for 100 steps:52.09
+ Total time:373.23
+Itteration 800/1564
+ Time for 100 steps:52.57
+ Total time:425.79
+Itteration 900/1564
+ Time for 100 steps:52.08
+ Total time:477.87
+Itteration 1000/1564
+ Time for 100 steps:52.09
+ Total time:529.95
+Itteration 1100/1564
+ Time for 100 steps:52.10
+ Total time:582.06
+Itteration 1200/1564
+ Time for 100 steps:52.35
+ Total time:634.41
+Itteration 1300/1564
+ Time for 100 steps:52.05
+ Total time:686.45
+Itteration 1400/1564
+ Time for 100 steps:52.12
+ Total time:738.57
+Itteration 1500/1564
+ Time for 100 steps:52.08
+ Total time:790.65
+[0/50][1564]
+                         Loss_D: 7.37 Loss_G: 10.26 Loss_KL: 0.32 Time: 823.98s
+                      
+Epoch 1 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torch/nn/functional.py:1386: UserWarning: nn.functional.sigmoid is deprecated. Use torch.sigmoid instead.
+  warnings.warn("nn.functional.sigmoid is deprecated. Use torch.sigmoid instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torch/nn/functional.py:2539: UserWarning: Default upsampling behavior when mode=bilinear is changed to align_corners=False since 0.4.0. Please specify align_corners=True if the old behavior is desired. See the documentation of nn.Upsample for details.
+  "See the documentation of nn.Upsample for details.".format(mode))
+/gpfs/hpc/home/domnich/StackGAN-v2/code/model.py:43: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.
+  x = nn.Softmax()(x)
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:0.98
+ Total time:0.98
+Itteration 100/1564
+ Time for 100 steps:52.31
+ Total time:53.29
+Itteration 200/1564
+ Time for 100 steps:52.03
+ Total time:105.32
+Itteration 300/1564
+ Time for 100 steps:52.07
+ Total time:157.38
+Itteration 400/1564
+ Time for 100 steps:52.07
+ Total time:209.45
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 500/1564
+ Time for 100 steps:55.45
+ Total time:264.91
+Itteration 600/1564
+ Time for 100 steps:51.98
+ Total time:316.89
+Itteration 700/1564
+ Time for 100 steps:52.14
+ Total time:369.02
+Itteration 800/1564
+ Time for 100 steps:52.18
+ Total time:421.21
+Itteration 900/1564
+ Time for 100 steps:52.18
+ Total time:473.39
+Itteration 1000/1564
+ Time for 100 steps:52.25
+ Total time:525.64
+Itteration 1100/1564
+ Time for 100 steps:52.21
+ Total time:577.85
+Itteration 1200/1564
+ Time for 100 steps:52.27
+ Total time:630.12
+Itteration 1300/1564
+ Time for 100 steps:52.21
+ Total time:682.33
+Itteration 1400/1564
+ Time for 100 steps:52.36
+ Total time:734.69
+Itteration 1500/1564
+ Time for 100 steps:53.24
+ Total time:787.93
+[1/50][1564]
+                         Loss_D: 9.21 Loss_G: 10.20 Loss_KL: 0.57 Time: 821.36s
+                      
+Epoch 2 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:1.03
+ Total time:1.03
+Itteration 100/1564
+ Time for 100 steps:52.89
+ Total time:53.93
+Itteration 200/1564
+ Time for 100 steps:52.09
+ Total time:106.02
+Itteration 300/1564
+ Time for 100 steps:52.08
+ Total time:158.10
+Itteration 400/1564
+ Time for 100 steps:53.05
+ Total time:211.16
+Itteration 500/1564
+ Time for 100 steps:52.33
+ Total time:263.49
+Itteration 600/1564
+ Time for 100 steps:52.09
+ Total time:315.58
+Itteration 700/1564
+ Time for 100 steps:52.79
+ Total time:368.36
+Itteration 800/1564
+ Time for 100 steps:53.35
+ Total time:421.72
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 900/1564
+ Time for 100 steps:56.34
+ Total time:478.06
+Itteration 1000/1564
+ Time for 100 steps:52.53
+ Total time:530.59
+Itteration 1100/1564
+ Time for 100 steps:52.18
+ Total time:582.76
+Itteration 1200/1564
+ Time for 100 steps:52.12
+ Total time:634.88
+Itteration 1300/1564
+ Time for 100 steps:52.11
+ Total time:686.99
+Itteration 1400/1564
+ Time for 100 steps:52.10
+ Total time:739.09
+Itteration 1500/1564
+ Time for 100 steps:52.11
+ Total time:791.20
+[2/50][1564]
+                         Loss_D: 9.58 Loss_G: 12.29 Loss_KL: 0.56 Time: 824.58s
+                      
+Epoch 3 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:0.90
+ Total time:0.90
+Itteration 100/1564
+ Time for 100 steps:52.30
+ Total time:53.20
+Itteration 200/1564
+ Time for 100 steps:52.10
+ Total time:105.30
+Itteration 300/1564
+ Time for 100 steps:52.07
+ Total time:157.38
+Itteration 400/1564
+ Time for 100 steps:52.12
+ Total time:209.50
+Itteration 500/1564
+ Time for 100 steps:52.14
+ Total time:261.64
+Itteration 600/1564
+ Time for 100 steps:52.08
+ Total time:313.72
+Itteration 700/1564
+ Time for 100 steps:52.08
+ Total time:365.80
+Itteration 800/1564
+ Time for 100 steps:52.09
+ Total time:417.89
+Itteration 900/1564
+ Time for 100 steps:52.12
+ Total time:470.01
+Itteration 1000/1564
+ Time for 100 steps:52.11
+ Total time:522.12
+Itteration 1100/1564
+ Time for 100 steps:52.10
+ Total time:574.22
+Itteration 1200/1564
+ Time for 100 steps:51.99
+ Total time:626.22
+Itteration 1300/1564
+ Time for 100 steps:52.06
+ Total time:678.28
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 1400/1564
+ Time for 100 steps:55.04
+ Total time:733.32
+Itteration 1500/1564
+ Time for 100 steps:52.06
+ Total time:785.39
+[3/50][1564]
+                         Loss_D: 7.07 Loss_G: 16.58 Loss_KL: 0.71 Time: 818.75s
+                      
+Epoch 4 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:1.04
+ Total time:1.04
+Itteration 100/1564
+ Time for 100 steps:52.19
+ Total time:53.23
+Itteration 200/1564
+ Time for 100 steps:52.08
+ Total time:105.31
+Itteration 300/1564
+ Time for 100 steps:52.10
+ Total time:157.40
+Itteration 400/1564
+ Time for 100 steps:52.12
+ Total time:209.53
+Itteration 500/1564
+ Time for 100 steps:52.07
+ Total time:261.60
+Itteration 600/1564
+ Time for 100 steps:52.11
+ Total time:313.70
+Itteration 700/1564
+ Time for 100 steps:52.12
+ Total time:365.82
+Itteration 800/1564
+ Time for 100 steps:52.17
+ Total time:417.99
+Itteration 900/1564
+ Time for 100 steps:52.13
+ Total time:470.12
+Itteration 1000/1564
+ Time for 100 steps:52.11
+ Total time:522.23
+Itteration 1100/1564
+ Time for 100 steps:52.13
+ Total time:574.36
+Itteration 1200/1564
+ Time for 100 steps:52.12
+ Total time:626.48
+Itteration 1300/1564
+ Time for 100 steps:52.18
+ Total time:678.66
+Itteration 1400/1564
+ Time for 100 steps:52.15
+ Total time:730.81
+Itteration 1500/1564
+ Time for 100 steps:52.13
+ Total time:782.93
+[4/50][1564]
+                         Loss_D: 12.53 Loss_G: 14.02 Loss_KL: 1.40 Time: 816.37s
+                      
+Epoch 5 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:0.97
+ Total time:0.97
+Itteration 100/1564
+ Time for 100 steps:52.32
+ Total time:53.29
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 200/1564
+ Time for 100 steps:55.47
+ Total time:108.76
+Itteration 300/1564
+ Time for 100 steps:52.40
+ Total time:161.16
+Itteration 400/1564
+ Time for 100 steps:52.16
+ Total time:213.32
+Itteration 500/1564
+ Time for 100 steps:52.10
+ Total time:265.42
+Itteration 600/1564
+ Time for 100 steps:52.16
+ Total time:317.57
+Itteration 700/1564
+ Time for 100 steps:52.18
+ Total time:369.75
+Itteration 800/1564
+ Time for 100 steps:52.16
+ Total time:421.91
+Itteration 900/1564
+ Time for 100 steps:53.26
+ Total time:475.17
+Itteration 1000/1564
+ Time for 100 steps:53.28
+ Total time:528.44
+Itteration 1100/1564
+ Time for 100 steps:53.28
+ Total time:581.72
+Itteration 1200/1564
+ Time for 100 steps:53.33
+ Total time:635.06
+Itteration 1300/1564
+ Time for 100 steps:53.29
+ Total time:688.35
+Itteration 1400/1564
+ Time for 100 steps:53.39
+ Total time:741.74
+Itteration 1500/1564
+ Time for 100 steps:52.76
+ Total time:794.50
+[5/50][1564]
+                         Loss_D: 8.57 Loss_G: 20.98 Loss_KL: 1.53 Time: 828.72s
+                      
+Epoch 6 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:0.98
+ Total time:0.98
+Itteration 100/1564
+ Time for 100 steps:53.36
+ Total time:54.35
+Itteration 200/1564
+ Time for 100 steps:53.36
+ Total time:107.71
+Itteration 300/1564
+ Time for 100 steps:52.21
+ Total time:159.91
+Itteration 400/1564
+ Time for 100 steps:52.18
+ Total time:212.09
+Itteration 500/1564
+ Time for 100 steps:52.22
+ Total time:264.31
+Itteration 600/1564
+ Time for 100 steps:52.38
+ Total time:316.70
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 700/1564
+ Time for 100 steps:55.37
+ Total time:372.07
+Itteration 800/1564
+ Time for 100 steps:52.19
+ Total time:424.26
+Itteration 900/1564
+ Time for 100 steps:52.30
+ Total time:476.57
+Itteration 1000/1564
+ Time for 100 steps:53.28
+ Total time:529.84
+Itteration 1100/1564
+ Time for 100 steps:52.61
+ Total time:582.46
+Itteration 1200/1564
+ Time for 100 steps:52.41
+ Total time:634.87
+Itteration 1300/1564
+ Time for 100 steps:52.14
+ Total time:687.01
+Itteration 1400/1564
+ Time for 100 steps:52.18
+ Total time:739.18
+Itteration 1500/1564
+ Time for 100 steps:53.10
+ Total time:792.28
+[6/50][1564]
+                         Loss_D: 5.90 Loss_G: 34.84 Loss_KL: 1.82 Time: 826.32s
+                      
+Epoch 7 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:1.09
+ Total time:1.09
+Itteration 100/1564
+ Time for 100 steps:53.04
+ Total time:54.14
+Itteration 200/1564
+ Time for 100 steps:52.40
+ Total time:106.54
+Itteration 300/1564
+ Time for 100 steps:52.39
+ Total time:158.92
+Itteration 400/1564
+ Time for 100 steps:52.33
+ Total time:211.25
+Itteration 500/1564
+ Time for 100 steps:52.29
+ Total time:263.54
+Itteration 600/1564
+ Time for 100 steps:52.29
+ Total time:315.83
+Itteration 700/1564
+ Time for 100 steps:52.27
+ Total time:368.11
+Itteration 800/1564
+ Time for 100 steps:52.29
+ Total time:420.40
+Itteration 900/1564
+ Time for 100 steps:52.35
+ Total time:472.74
+Itteration 1000/1564
+ Time for 100 steps:52.27
+ Total time:525.02
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 1100/1564
+ Time for 100 steps:55.24
+ Total time:580.25
+Itteration 1200/1564
+ Time for 100 steps:52.21
+ Total time:632.46
+Itteration 1300/1564
+ Time for 100 steps:52.69
+ Total time:685.15
+Itteration 1400/1564
+ Time for 100 steps:53.25
+ Total time:738.41
+Itteration 1500/1564
+ Time for 100 steps:52.41
+ Total time:790.82
+[7/50][1564]
+                         Loss_D: 10.71 Loss_G: 18.72 Loss_KL: 1.38 Time: 824.47s
+                      
+Epoch 8 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:1.12
+ Total time:1.12
+Itteration 100/1564
+ Time for 100 steps:52.66
+ Total time:53.78
+Itteration 200/1564
+ Time for 100 steps:52.21
+ Total time:105.99
+Itteration 300/1564
+ Time for 100 steps:52.20
+ Total time:158.18
+Itteration 400/1564
+ Time for 100 steps:52.17
+ Total time:210.35
+Itteration 500/1564
+ Time for 100 steps:52.17
+ Total time:262.52
+Itteration 600/1564
+ Time for 100 steps:52.16
+ Total time:314.69
+Itteration 700/1564
+ Time for 100 steps:52.22
+ Total time:366.91
+Itteration 800/1564
+ Time for 100 steps:52.15
+ Total time:419.06
+Itteration 900/1564
+ Time for 100 steps:52.19
+ Total time:471.25
+Itteration 1000/1564
+ Time for 100 steps:52.15
+ Total time:523.40
+Itteration 1100/1564
+ Time for 100 steps:52.16
+ Total time:575.56
+Itteration 1200/1564
+ Time for 100 steps:52.18
+ Total time:627.74
+Itteration 1300/1564
+ Time for 100 steps:52.17
+ Total time:679.91
+Itteration 1400/1564
+ Time for 100 steps:52.17
+ Total time:732.08
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 1500/1564
+ Time for 100 steps:55.22
+ Total time:787.30
+[8/50][1564]
+                         Loss_D: 5.26 Loss_G: 20.91 Loss_KL: 1.40 Time: 820.72s
+                      
+Epoch 9 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:0.98
+ Total time:0.98
+Itteration 100/1564
+ Time for 100 steps:52.38
+ Total time:53.37
+Itteration 200/1564
+ Time for 100 steps:52.18
+ Total time:105.54
+Itteration 300/1564
+ Time for 100 steps:52.17
+ Total time:157.71
+Itteration 400/1564
+ Time for 100 steps:52.18
+ Total time:209.89
+Itteration 500/1564
+ Time for 100 steps:52.16
+ Total time:262.05
+Itteration 600/1564
+ Time for 100 steps:52.21
+ Total time:314.26
+Itteration 700/1564
+ Time for 100 steps:52.17
+ Total time:366.43
+Itteration 800/1564
+ Time for 100 steps:52.18
+ Total time:418.61
+Itteration 900/1564
+ Time for 100 steps:52.23
+ Total time:470.84
+Itteration 1000/1564
+ Time for 100 steps:52.18
+ Total time:523.02
+Itteration 1100/1564
+ Time for 100 steps:52.21
+ Total time:575.23
+Itteration 1200/1564
+ Time for 100 steps:52.21
+ Total time:627.44
+Itteration 1300/1564
+ Time for 100 steps:52.19
+ Total time:679.62
+Itteration 1400/1564
+ Time for 100 steps:52.20
+ Total time:731.82
+Itteration 1500/1564
+ Time for 100 steps:52.24
+ Total time:784.06
+[9/50][1564]
+                         Loss_D: 5.78 Loss_G: 21.98 Loss_KL: 2.32 Time: 817.53s
+                      
+Epoch 10 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:0.96
+ Total time:0.96
+Itteration 100/1564
+ Time for 100 steps:52.39
+ Total time:53.35
+Itteration 200/1564
+ Time for 100 steps:52.18
+ Total time:105.53
+Itteration 300/1564
+ Time for 100 steps:52.21
+ Total time:157.74
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 400/1564
+ Time for 100 steps:55.31
+ Total time:213.04
+Itteration 500/1564
+ Time for 100 steps:52.18
+ Total time:265.22
+Itteration 600/1564
+ Time for 100 steps:52.17
+ Total time:317.39
+Itteration 700/1564
+ Time for 100 steps:52.19
+ Total time:369.58
+Itteration 800/1564
+ Time for 100 steps:52.23
+ Total time:421.81
+Itteration 900/1564
+ Time for 100 steps:52.21
+ Total time:474.02
+Itteration 1000/1564
+ Time for 100 steps:52.22
+ Total time:526.24
+Itteration 1100/1564
+ Time for 100 steps:52.20
+ Total time:578.45
+Itteration 1200/1564
+ Time for 100 steps:52.18
+ Total time:630.63
+Itteration 1300/1564
+ Time for 100 steps:52.20
+ Total time:682.83
+Itteration 1400/1564
+ Time for 100 steps:52.20
+ Total time:735.03
+Itteration 1500/1564
+ Time for 100 steps:52.14
+ Total time:787.17
+[10/50][1564]
+                         Loss_D: 9.07 Loss_G: 24.22 Loss_KL: 2.00 Time: 820.59s
+                      
+Epoch 11 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:1.04
+ Total time:1.04
+Itteration 100/1564
+ Time for 100 steps:52.37
+ Total time:53.41
+Itteration 200/1564
+ Time for 100 steps:52.17
+ Total time:105.59
+Itteration 300/1564
+ Time for 100 steps:52.17
+ Total time:157.76
+Itteration 400/1564
+ Time for 100 steps:52.19
+ Total time:209.95
+Itteration 500/1564
+ Time for 100 steps:52.16
+ Total time:262.10
+Itteration 600/1564
+ Time for 100 steps:52.17
+ Total time:314.27
+Itteration 700/1564
+ Time for 100 steps:52.18
+ Total time:366.45
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 800/1564
+ Time for 100 steps:55.18
+ Total time:421.63
+Itteration 900/1564
+ Time for 100 steps:52.12
+ Total time:473.76
+Itteration 1000/1564
+ Time for 100 steps:52.17
+ Total time:525.93
+Itteration 1100/1564
+ Time for 100 steps:52.17
+ Total time:578.10
+Itteration 1200/1564
+ Time for 100 steps:52.16
+ Total time:630.26
+Itteration 1300/1564
+ Time for 100 steps:52.16
+ Total time:682.42
+Itteration 1400/1564
+ Time for 100 steps:52.18
+ Total time:734.60
+Itteration 1500/1564
+ Time for 100 steps:52.15
+ Total time:786.75
+[11/50][1564]
+                         Loss_D: 4.55 Loss_G: 19.68 Loss_KL: 2.27 Time: 820.15s
+                      
+Epoch 12 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:0.99
+ Total time:0.99
+Itteration 100/1564
+ Time for 100 steps:52.32
+ Total time:53.31
+Itteration 200/1564
+ Time for 100 steps:52.19
+ Total time:105.49
+Itteration 300/1564
+ Time for 100 steps:52.18
+ Total time:157.68
+Itteration 400/1564
+ Time for 100 steps:52.19
+ Total time:209.86
+Itteration 500/1564
+ Time for 100 steps:52.17
+ Total time:262.03
+Itteration 600/1564
+ Time for 100 steps:52.19
+ Total time:314.22
+Itteration 700/1564
+ Time for 100 steps:52.18
+ Total time:366.39
+Itteration 800/1564
+ Time for 100 steps:52.17
+ Total time:418.57
+Itteration 900/1564
+ Time for 100 steps:52.17
+ Total time:470.73
+Itteration 1000/1564
+ Time for 100 steps:52.18
+ Total time:522.91
+Itteration 1100/1564
+ Time for 100 steps:52.19
+ Total time:575.10
+Itteration 1200/1564
+ Time for 100 steps:52.18
+ Total time:627.28
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 1300/1564
+ Time for 100 steps:55.23
+ Total time:682.51
+Itteration 1400/1564
+ Time for 100 steps:52.14
+ Total time:734.65
+Itteration 1500/1564
+ Time for 100 steps:52.18
+ Total time:786.83
+[12/50][1564]
+                         Loss_D: 4.05 Loss_G: 26.09 Loss_KL: 2.12 Time: 820.24s
+                      
+Epoch 13 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:1.01
+ Total time:1.01
+Itteration 100/1564
+ Time for 100 steps:52.30
+ Total time:53.32
+Itteration 200/1564
+ Time for 100 steps:52.17
+ Total time:105.49
+Itteration 300/1564
+ Time for 100 steps:52.14
+ Total time:157.63
+Itteration 400/1564
+ Time for 100 steps:52.19
+ Total time:209.82
+Itteration 500/1564
+ Time for 100 steps:52.14
+ Total time:261.96
+Itteration 600/1564
+ Time for 100 steps:52.19
+ Total time:314.15
+Itteration 700/1564
+ Time for 100 steps:52.16
+ Total time:366.31
+Itteration 800/1564
+ Time for 100 steps:52.14
+ Total time:418.45
+Itteration 900/1564
+ Time for 100 steps:52.17
+ Total time:470.62
+Itteration 1000/1564
+ Time for 100 steps:52.21
+ Total time:522.83
+Itteration 1100/1564
+ Time for 100 steps:52.18
+ Total time:575.01
+Itteration 1200/1564
+ Time for 100 steps:52.15
+ Total time:627.16
+Itteration 1300/1564
+ Time for 100 steps:52.15
+ Total time:679.31
+Itteration 1400/1564
+ Time for 100 steps:52.16
+ Total time:731.47
+Itteration 1500/1564
+ Time for 100 steps:52.21
+ Total time:783.67
+[13/50][1564]
+                         Loss_D: 4.26 Loss_G: 27.32 Loss_KL: 2.28 Time: 817.06s
+                      
+Epoch 14 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:1.00
+ Total time:1.00
+Itteration 100/1564
+ Time for 100 steps:52.37
+ Total time:53.37
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 200/1564
+ Time for 100 steps:55.23
+ Total time:108.60
+Itteration 300/1564
+ Time for 100 steps:52.22
+ Total time:160.81
+Itteration 400/1564
+ Time for 100 steps:52.25
+ Total time:213.06
+Itteration 500/1564
+ Time for 100 steps:52.16
+ Total time:265.23
+Itteration 600/1564
+ Time for 100 steps:52.19
+ Total time:317.41
+Itteration 700/1564
+ Time for 100 steps:52.23
+ Total time:369.64
+Itteration 800/1564
+ Time for 100 steps:52.25
+ Total time:421.89
+Itteration 900/1564
+ Time for 100 steps:52.24
+ Total time:474.13
+Itteration 1000/1564
+ Time for 100 steps:52.18
+ Total time:526.31
+Itteration 1100/1564
+ Time for 100 steps:52.23
+ Total time:578.55
+Itteration 1200/1564
+ Time for 100 steps:52.22
+ Total time:630.77
+Itteration 1300/1564
+ Time for 100 steps:52.24
+ Total time:683.00
+Itteration 1400/1564
+ Time for 100 steps:52.23
+ Total time:735.23
+Itteration 1500/1564
+ Time for 100 steps:52.19
+ Total time:787.42
+[14/50][1564]
+                         Loss_D: 4.78 Loss_G: 24.68 Loss_KL: 2.32 Time: 820.85s
+                      
+Epoch 15 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:1.02
+ Total time:1.02
+Itteration 100/1564
+ Time for 100 steps:52.30
+ Total time:53.32
+Itteration 200/1564
+ Time for 100 steps:52.21
+ Total time:105.53
+Itteration 300/1564
+ Time for 100 steps:52.20
+ Total time:157.72
+Itteration 400/1564
+ Time for 100 steps:52.14
+ Total time:209.87
+Itteration 500/1564
+ Time for 100 steps:52.13
+ Total time:262.00
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 600/1564
+ Time for 100 steps:55.38
+ Total time:317.38
+Itteration 700/1564
+ Time for 100 steps:52.17
+ Total time:369.54
+Itteration 800/1564
+ Time for 100 steps:52.16
+ Total time:421.71
+Itteration 900/1564
+ Time for 100 steps:52.11
+ Total time:473.82
+Itteration 1000/1564
+ Time for 100 steps:52.16
+ Total time:525.99
+Itteration 1100/1564
+ Time for 100 steps:52.17
+ Total time:578.15
+Itteration 1200/1564
+ Time for 100 steps:52.16
+ Total time:630.31
+Itteration 1300/1564
+ Time for 100 steps:52.13
+ Total time:682.44
+Itteration 1400/1564
+ Time for 100 steps:52.10
+ Total time:734.54
+Itteration 1500/1564
+ Time for 100 steps:52.14
+ Total time:786.68
+[15/50][1564]
+                         Loss_D: 5.97 Loss_G: 32.61 Loss_KL: 2.62 Time: 820.09s
+                      
+Epoch 16 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:1.04
+ Total time:1.04
+Itteration 100/1564
+ Time for 100 steps:52.29
+ Total time:53.33
+Itteration 200/1564
+ Time for 100 steps:52.16
+ Total time:105.49
+Itteration 300/1564
+ Time for 100 steps:52.16
+ Total time:157.65
+Itteration 400/1564
+ Time for 100 steps:52.14
+ Total time:209.79
+Itteration 500/1564
+ Time for 100 steps:52.17
+ Total time:261.97
+Itteration 600/1564
+ Time for 100 steps:52.20
+ Total time:314.16
+Itteration 700/1564
+ Time for 100 steps:52.17
+ Total time:366.34
+Itteration 800/1564
+ Time for 100 steps:52.15
+ Total time:418.49
+Itteration 900/1564
+ Time for 100 steps:52.18
+ Total time:470.67
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 1000/1564
+ Time for 100 steps:55.34
+ Total time:526.01
+Itteration 1100/1564
+ Time for 100 steps:52.17
+ Total time:578.18
+Itteration 1200/1564
+ Time for 100 steps:52.17
+ Total time:630.35
+Itteration 1300/1564
+ Time for 100 steps:52.16
+ Total time:682.50
+Itteration 1400/1564
+ Time for 100 steps:52.19
+ Total time:734.69
+Itteration 1500/1564
+ Time for 100 steps:52.19
+ Total time:786.88
+[16/50][1564]
+                         Loss_D: 6.35 Loss_G: 29.93 Loss_KL: 2.63 Time: 820.32s
+                      
+Epoch 17 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:0.85
+ Total time:0.85
+Itteration 100/1564
+ Time for 100 steps:52.37
+ Total time:53.23
+Itteration 200/1564
+ Time for 100 steps:52.18
+ Total time:105.40
+Itteration 300/1564
+ Time for 100 steps:52.17
+ Total time:157.57
+Itteration 400/1564
+ Time for 100 steps:52.19
+ Total time:209.76
+Itteration 500/1564
+ Time for 100 steps:52.18
+ Total time:261.94
+Itteration 600/1564
+ Time for 100 steps:52.18
+ Total time:314.12
+Itteration 700/1564
+ Time for 100 steps:52.16
+ Total time:366.28
+Itteration 800/1564
+ Time for 100 steps:52.17
+ Total time:418.45
+Itteration 900/1564
+ Time for 100 steps:52.18
+ Total time:470.63
+Itteration 1000/1564
+ Time for 100 steps:52.19
+ Total time:522.82
+Itteration 1100/1564
+ Time for 100 steps:52.20
+ Total time:575.02
+Itteration 1200/1564
+ Time for 100 steps:52.13
+ Total time:627.15
+Itteration 1300/1564
+ Time for 100 steps:52.18
+ Total time:679.33
+Itteration 1400/1564
+ Time for 100 steps:52.19
+ Total time:731.52
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 1500/1564
+ Time for 100 steps:55.37
+ Total time:786.89
+[17/50][1564]
+                         Loss_D: 5.17 Loss_G: 36.24 Loss_KL: 2.54 Time: 820.30s
+                      
+Epoch 18 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:1.05
+ Total time:1.05
+Itteration 100/1564
+ Time for 100 steps:52.23
+ Total time:53.28
+Itteration 200/1564
+ Time for 100 steps:52.19
+ Total time:105.47
+Itteration 300/1564
+ Time for 100 steps:52.19
+ Total time:157.66
+Itteration 400/1564
+ Time for 100 steps:52.14
+ Total time:209.80
+Itteration 500/1564
+ Time for 100 steps:52.15
+ Total time:261.96
+Itteration 600/1564
+ Time for 100 steps:52.17
+ Total time:314.12
+Itteration 700/1564
+ Time for 100 steps:52.16
+ Total time:366.28
+Itteration 800/1564
+ Time for 100 steps:52.19
+ Total time:418.47
+Itteration 900/1564
+ Time for 100 steps:52.18
+ Total time:470.65
+Itteration 1000/1564
+ Time for 100 steps:52.18
+ Total time:522.83
+Itteration 1100/1564
+ Time for 100 steps:52.16
+ Total time:574.99
+Itteration 1200/1564
+ Time for 100 steps:52.17
+ Total time:627.16
+Itteration 1300/1564
+ Time for 100 steps:52.16
+ Total time:679.32
+Itteration 1400/1564
+ Time for 100 steps:52.16
+ Total time:731.48
+Itteration 1500/1564
+ Time for 100 steps:52.16
+ Total time:783.64
+[18/50][1564]
+                         Loss_D: 6.68 Loss_G: 25.57 Loss_KL: 2.96 Time: 817.05s
+                      
+Epoch 19 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:1.00
+ Total time:1.00
+Itteration 100/1564
+ Time for 100 steps:52.31
+ Total time:53.31
+Itteration 200/1564
+ Time for 100 steps:52.18
+ Total time:105.48
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 300/1564
+ Time for 100 steps:55.43
+ Total time:160.91
+Itteration 400/1564
+ Time for 100 steps:52.17
+ Total time:213.08
+Itteration 500/1564
+ Time for 100 steps:52.18
+ Total time:265.26
+Itteration 600/1564
+ Time for 100 steps:52.24
+ Total time:317.51
+Itteration 700/1564
+ Time for 100 steps:52.18
+ Total time:369.69
+Itteration 800/1564
+ Time for 100 steps:52.16
+ Total time:421.85
+Itteration 900/1564
+ Time for 100 steps:52.18
+ Total time:474.03
+Itteration 1000/1564
+ Time for 100 steps:52.19
+ Total time:526.22
+Itteration 1100/1564
+ Time for 100 steps:52.20
+ Total time:578.42
+Itteration 1200/1564
+ Time for 100 steps:52.17
+ Total time:630.59
+Itteration 1300/1564
+ Time for 100 steps:52.16
+ Total time:682.75
+Itteration 1400/1564
+ Time for 100 steps:52.19
+ Total time:734.94
+Itteration 1500/1564
+ Time for 100 steps:52.17
+ Total time:787.12
+[19/50][1564]
+                         Loss_D: 5.68 Loss_G: 22.15 Loss_KL: 3.02 Time: 820.55s
+                      
+Epoch 20 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:0.95
+ Total time:0.95
+Itteration 100/1564
+ Time for 100 steps:52.38
+ Total time:53.33
+Itteration 200/1564
+ Time for 100 steps:52.14
+ Total time:105.47
+Itteration 300/1564
+ Time for 100 steps:52.14
+ Total time:157.61
+Itteration 400/1564
+ Time for 100 steps:52.17
+ Total time:209.79
+Itteration 500/1564
+ Time for 100 steps:52.19
+ Total time:261.97
+Itteration 600/1564
+ Time for 100 steps:52.12
+ Total time:314.09
+Itteration 700/1564
+ Time for 100 steps:52.14
+ Total time:366.23
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 800/1564
+ Time for 100 steps:55.40
+ Total time:421.63
+Itteration 900/1564
+ Time for 100 steps:52.20
+ Total time:473.83
+Itteration 1000/1564
+ Time for 100 steps:52.21
+ Total time:526.04
+Itteration 1100/1564
+ Time for 100 steps:52.16
+ Total time:578.19
+Itteration 1200/1564
+ Time for 100 steps:52.19
+ Total time:630.38
+Itteration 1300/1564
+ Time for 100 steps:52.16
+ Total time:682.54
+Itteration 1400/1564
+ Time for 100 steps:52.20
+ Total time:734.75
+Itteration 1500/1564
+ Time for 100 steps:52.18
+ Total time:786.93
+[20/50][1564]
+                         Loss_D: 6.01 Loss_G: 38.85 Loss_KL: 3.15 Time: 820.35s
+                      
+Epoch 21 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:0.90
+ Total time:0.90
+Itteration 100/1564
+ Time for 100 steps:52.38
+ Total time:53.28
+Itteration 200/1564
+ Time for 100 steps:52.15
+ Total time:105.43
+Itteration 300/1564
+ Time for 100 steps:52.18
+ Total time:157.60
+Itteration 400/1564
+ Time for 100 steps:52.17
+ Total time:209.77
+Itteration 500/1564
+ Time for 100 steps:53.09
+ Total time:262.87
+Itteration 600/1564
+ Time for 100 steps:52.12
+ Total time:314.98
+Itteration 700/1564
+ Time for 100 steps:52.18
+ Total time:367.16
+Itteration 800/1564
+ Time for 100 steps:52.59
+ Total time:419.75
+Itteration 900/1564
+ Time for 100 steps:52.54
+ Total time:472.29
+Itteration 1000/1564
+ Time for 100 steps:52.64
+ Total time:524.94
+Itteration 1100/1564
+ Time for 100 steps:52.60
+ Total time:577.54
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 1200/1564
+ Time for 100 steps:56.19
+ Total time:633.73
+Itteration 1300/1564
+ Time for 100 steps:52.55
+ Total time:686.28
+Itteration 1400/1564
+ Time for 100 steps:52.55
+ Total time:738.83
+Itteration 1500/1564
+ Time for 100 steps:52.58
+ Total time:791.41
+[21/50][1564]
+                         Loss_D: 6.47 Loss_G: 27.59 Loss_KL: 3.07 Time: 825.07s
+                      
+Epoch 22 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:1.13
+ Total time:1.13
+Itteration 100/1564
+ Time for 100 steps:52.81
+ Total time:53.94
+Itteration 200/1564
+ Time for 100 steps:52.67
+ Total time:106.61
+Itteration 300/1564
+ Time for 100 steps:52.55
+ Total time:159.15
+Itteration 400/1564
+ Time for 100 steps:52.56
+ Total time:211.71
+Itteration 500/1564
+ Time for 100 steps:52.47
+ Total time:264.18
+Itteration 600/1564
+ Time for 100 steps:52.21
+ Total time:316.39
+Itteration 700/1564
+ Time for 100 steps:53.00
+ Total time:369.39
+Itteration 800/1564
+ Time for 100 steps:53.35
+ Total time:422.74
+Itteration 900/1564
+ Time for 100 steps:52.88
+ Total time:475.62
+Itteration 1000/1564
+ Time for 100 steps:52.18
+ Total time:527.80
+Itteration 1100/1564
+ Time for 100 steps:52.22
+ Total time:580.02
+Itteration 1200/1564
+ Time for 100 steps:52.22
+ Total time:632.24
+Itteration 1300/1564
+ Time for 100 steps:52.18
+ Total time:684.42
+Itteration 1400/1564
+ Time for 100 steps:52.17
+ Total time:736.59
+Itteration 1500/1564
+ Time for 100 steps:52.19
+ Total time:788.78
+[22/50][1564]
+                         Loss_D: 4.81 Loss_G: 29.98 Loss_KL: 3.67 Time: 822.22s
+                      
+Epoch 23 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:0.94
+ Total time:0.94
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 100/1564
+ Time for 100 steps:55.71
+ Total time:56.66
+Itteration 200/1564
+ Time for 100 steps:52.24
+ Total time:108.90
+Itteration 300/1564
+ Time for 100 steps:52.21
+ Total time:161.11
+Itteration 400/1564
+ Time for 100 steps:52.22
+ Total time:213.33
+Itteration 500/1564
+ Time for 100 steps:52.28
+ Total time:265.61
+Itteration 600/1564
+ Time for 100 steps:52.26
+ Total time:317.87
+Itteration 700/1564
+ Time for 100 steps:52.24
+ Total time:370.11
+Itteration 800/1564
+ Time for 100 steps:52.19
+ Total time:422.29
+Itteration 900/1564
+ Time for 100 steps:52.22
+ Total time:474.51
+Itteration 1000/1564
+ Time for 100 steps:52.25
+ Total time:526.76
+Itteration 1100/1564
+ Time for 100 steps:52.19
+ Total time:578.94
+Itteration 1200/1564
+ Time for 100 steps:52.18
+ Total time:631.12
+Itteration 1300/1564
+ Time for 100 steps:52.19
+ Total time:683.32
+Itteration 1400/1564
+ Time for 100 steps:52.24
+ Total time:735.55
+Itteration 1500/1564
+ Time for 100 steps:52.25
+ Total time:787.80
+[23/50][1564]
+                         Loss_D: 2.64 Loss_G: 32.63 Loss_KL: 4.10 Time: 821.25s
+                      
+Epoch 24 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:0.93
+ Total time:0.93
+Itteration 100/1564
+ Time for 100 steps:52.32
+ Total time:53.25
+Itteration 200/1564
+ Time for 100 steps:52.16
+ Total time:105.40
+Itteration 300/1564
+ Time for 100 steps:52.18
+ Total time:157.58
+Itteration 400/1564
+ Time for 100 steps:52.15
+ Total time:209.73
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 500/1564
+ Time for 100 steps:55.34
+ Total time:265.07
+Itteration 600/1564
+ Time for 100 steps:52.17
+ Total time:317.24
+Itteration 700/1564
+ Time for 100 steps:52.17
+ Total time:369.41
+Itteration 800/1564
+ Time for 100 steps:52.18
+ Total time:421.58
+Itteration 900/1564
+ Time for 100 steps:52.18
+ Total time:473.76
+Itteration 1000/1564
+ Time for 100 steps:52.19
+ Total time:525.95
+Itteration 1100/1564
+ Time for 100 steps:52.17
+ Total time:578.12
+Itteration 1200/1564
+ Time for 100 steps:52.16
+ Total time:630.29
+Itteration 1300/1564
+ Time for 100 steps:52.18
+ Total time:682.47
+Itteration 1400/1564
+ Time for 100 steps:52.16
+ Total time:734.63
+Itteration 1500/1564
+ Time for 100 steps:52.15
+ Total time:786.78
+[24/50][1564]
+                         Loss_D: 3.81 Loss_G: 37.77 Loss_KL: 4.22 Time: 820.20s
+                      
+Epoch 25 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:1.03
+ Total time:1.03
+Itteration 100/1564
+ Time for 100 steps:52.30
+ Total time:53.33
+Itteration 200/1564
+ Time for 100 steps:52.19
+ Total time:105.53
+Itteration 300/1564
+ Time for 100 steps:52.21
+ Total time:157.74
+Itteration 400/1564
+ Time for 100 steps:52.19
+ Total time:209.92
+Itteration 500/1564
+ Time for 100 steps:52.18
+ Total time:262.10
+Itteration 600/1564
+ Time for 100 steps:52.20
+ Total time:314.30
+Itteration 700/1564
+ Time for 100 steps:52.18
+ Total time:366.48
+Itteration 800/1564
+ Time for 100 steps:52.18
+ Total time:418.66
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 900/1564
+ Time for 100 steps:55.40
+ Total time:474.06
+Itteration 1000/1564
+ Time for 100 steps:52.15
+ Total time:526.21
+Itteration 1100/1564
+ Time for 100 steps:52.20
+ Total time:578.41
+Itteration 1200/1564
+ Time for 100 steps:52.19
+ Total time:630.60
+Itteration 1300/1564
+ Time for 100 steps:52.15
+ Total time:682.75
+Itteration 1400/1564
+ Time for 100 steps:52.14
+ Total time:734.89
+Itteration 1500/1564
+ Time for 100 steps:52.14
+ Total time:787.03
+[25/50][1564]
+                         Loss_D: 7.07 Loss_G: 42.40 Loss_KL: 4.42 Time: 820.44s
+                      
+Epoch 26 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:1.00
+ Total time:1.00
+Itteration 100/1564
+ Time for 100 steps:52.28
+ Total time:53.29
+Itteration 200/1564
+ Time for 100 steps:52.15
+ Total time:105.44
+Itteration 300/1564
+ Time for 100 steps:52.17
+ Total time:157.61
+Itteration 400/1564
+ Time for 100 steps:52.16
+ Total time:209.77
+Itteration 500/1564
+ Time for 100 steps:52.17
+ Total time:261.94
+Itteration 600/1564
+ Time for 100 steps:52.18
+ Total time:314.12
+Itteration 700/1564
+ Time for 100 steps:52.16
+ Total time:366.28
+Itteration 800/1564
+ Time for 100 steps:52.19
+ Total time:418.47
+Itteration 900/1564
+ Time for 100 steps:52.16
+ Total time:470.63
+Itteration 1000/1564
+ Time for 100 steps:52.21
+ Total time:522.83
+Itteration 1100/1564
+ Time for 100 steps:52.19
+ Total time:575.03
+Itteration 1200/1564
+ Time for 100 steps:52.17
+ Total time:627.20
+Itteration 1300/1564
+ Time for 100 steps:52.17
+ Total time:679.37
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 1400/1564
+ Time for 100 steps:55.45
+ Total time:734.81
+Itteration 1500/1564
+ Time for 100 steps:52.20
+ Total time:787.02
+[26/50][1564]
+                         Loss_D: 6.35 Loss_G: 37.96 Loss_KL: 3.98 Time: 820.45s
+                      
+Epoch 27 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:1.04
+ Total time:1.04
+Itteration 100/1564
+ Time for 100 steps:52.30
+ Total time:53.34
+Itteration 200/1564
+ Time for 100 steps:52.16
+ Total time:105.51
+Itteration 300/1564
+ Time for 100 steps:52.15
+ Total time:157.66
+Itteration 400/1564
+ Time for 100 steps:52.19
+ Total time:209.84
+Itteration 500/1564
+ Time for 100 steps:52.20
+ Total time:262.04
+Itteration 600/1564
+ Time for 100 steps:52.19
+ Total time:314.23
+Itteration 700/1564
+ Time for 100 steps:52.21
+ Total time:366.44
+Itteration 800/1564
+ Time for 100 steps:52.21
+ Total time:418.65
+Itteration 900/1564
+ Time for 100 steps:52.20
+ Total time:470.84
+Itteration 1000/1564
+ Time for 100 steps:52.18
+ Total time:523.03
+Itteration 1100/1564
+ Time for 100 steps:52.18
+ Total time:575.21
+Itteration 1200/1564
+ Time for 100 steps:52.17
+ Total time:627.38
+Itteration 1300/1564
+ Time for 100 steps:52.20
+ Total time:679.58
+Itteration 1400/1564
+ Time for 100 steps:52.17
+ Total time:731.76
+Itteration 1500/1564
+ Time for 100 steps:52.18
+ Total time:783.94
+[27/50][1564]
+                         Loss_D: 3.44 Loss_G: 40.75 Loss_KL: 4.20 Time: 817.36s
+                      
+Epoch 28 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:0.96
+ Total time:0.96
+Itteration 100/1564
+ Time for 100 steps:52.39
+ Total time:53.34
+Itteration 200/1564
+ Time for 100 steps:52.18
+ Total time:105.53
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 300/1564
+ Time for 100 steps:55.46
+ Total time:160.99
+Itteration 400/1564
+ Time for 100 steps:52.18
+ Total time:213.17
+Itteration 500/1564
+ Time for 100 steps:52.18
+ Total time:265.35
+Itteration 600/1564
+ Time for 100 steps:52.19
+ Total time:317.55
+Itteration 700/1564
+ Time for 100 steps:52.22
+ Total time:369.77
+Itteration 800/1564
+ Time for 100 steps:52.27
+ Total time:422.03
+Itteration 900/1564
+ Time for 100 steps:52.17
+ Total time:474.20
+Itteration 1000/1564
+ Time for 100 steps:52.79
+ Total time:526.99
+Itteration 1100/1564
+ Time for 100 steps:52.20
+ Total time:579.19
+Itteration 1200/1564
+ Time for 100 steps:52.22
+ Total time:631.41
+Itteration 1300/1564
+ Time for 100 steps:52.23
+ Total time:683.64
+Itteration 1400/1564
+ Time for 100 steps:52.17
+ Total time:735.82
+Itteration 1500/1564
+ Time for 100 steps:52.19
+ Total time:788.00
+[28/50][1564]
+                         Loss_D: 4.78 Loss_G: 29.00 Loss_KL: 3.99 Time: 821.41s
+                      
+Epoch 29 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:1.07
+ Total time:1.07
+Itteration 100/1564
+ Time for 100 steps:52.35
+ Total time:53.42
+Itteration 200/1564
+ Time for 100 steps:52.19
+ Total time:105.61
+Itteration 300/1564
+ Time for 100 steps:52.15
+ Total time:157.76
+Itteration 400/1564
+ Time for 100 steps:52.16
+ Total time:209.92
+Itteration 500/1564
+ Time for 100 steps:52.17
+ Total time:262.08
+Itteration 600/1564
+ Time for 100 steps:52.19
+ Total time:314.27
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 700/1564
+ Time for 100 steps:55.44
+ Total time:369.71
+Itteration 800/1564
+ Time for 100 steps:52.15
+ Total time:421.86
+Itteration 900/1564
+ Time for 100 steps:52.16
+ Total time:474.02
+Itteration 1000/1564
+ Time for 100 steps:52.18
+ Total time:526.20
+Itteration 1100/1564
+ Time for 100 steps:52.19
+ Total time:578.39
+Itteration 1200/1564
+ Time for 100 steps:52.21
+ Total time:630.60
+Itteration 1300/1564
+ Time for 100 steps:52.17
+ Total time:682.77
+Itteration 1400/1564
+ Time for 100 steps:52.17
+ Total time:734.95
+Itteration 1500/1564
+ Time for 100 steps:52.11
+ Total time:787.06
+[29/50][1564]
+                         Loss_D: 5.63 Loss_G: 31.09 Loss_KL: 4.87 Time: 820.48s
+                      
+Epoch 30 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:0.88
+ Total time:0.88
+Itteration 100/1564
+ Time for 100 steps:52.42
+ Total time:53.30
+Itteration 200/1564
+ Time for 100 steps:52.13
+ Total time:105.43
+Itteration 300/1564
+ Time for 100 steps:52.15
+ Total time:157.58
+Itteration 400/1564
+ Time for 100 steps:52.14
+ Total time:209.72
+Itteration 500/1564
+ Time for 100 steps:52.19
+ Total time:261.91
+Itteration 600/1564
+ Time for 100 steps:52.14
+ Total time:314.05
+Itteration 700/1564
+ Time for 100 steps:52.14
+ Total time:366.19
+Itteration 800/1564
+ Time for 100 steps:52.18
+ Total time:418.37
+Itteration 900/1564
+ Time for 100 steps:52.20
+ Total time:470.57
+Itteration 1000/1564
+ Time for 100 steps:52.14
+ Total time:522.71
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 1100/1564
+ Time for 100 steps:56.58
+ Total time:579.29
+Itteration 1200/1564
+ Time for 100 steps:52.13
+ Total time:631.43
+Itteration 1300/1564
+ Time for 100 steps:52.16
+ Total time:683.58
+Itteration 1400/1564
+ Time for 100 steps:52.18
+ Total time:735.76
+Itteration 1500/1564
+ Time for 100 steps:52.20
+ Total time:787.96
+[30/50][1564]
+                         Loss_D: 7.10 Loss_G: 28.92 Loss_KL: 5.18 Time: 821.37s
+                      
+Epoch 31 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:0.97
+ Total time:0.97
+Itteration 100/1564
+ Time for 100 steps:52.34
+ Total time:53.32
+Itteration 200/1564
+ Time for 100 steps:52.17
+ Total time:105.48
+Itteration 300/1564
+ Time for 100 steps:52.18
+ Total time:157.66
+Itteration 400/1564
+ Time for 100 steps:52.21
+ Total time:209.88
+Itteration 500/1564
+ Time for 100 steps:52.18
+ Total time:262.05
+Itteration 600/1564
+ Time for 100 steps:52.16
+ Total time:314.21
+Itteration 700/1564
+ Time for 100 steps:52.18
+ Total time:366.39
+Itteration 800/1564
+ Time for 100 steps:52.21
+ Total time:418.60
+Itteration 900/1564
+ Time for 100 steps:52.20
+ Total time:470.80
+Itteration 1000/1564
+ Time for 100 steps:52.18
+ Total time:522.99
+Itteration 1100/1564
+ Time for 100 steps:52.20
+ Total time:575.19
+Itteration 1200/1564
+ Time for 100 steps:52.18
+ Total time:627.37
+Itteration 1300/1564
+ Time for 100 steps:52.21
+ Total time:679.58
+Itteration 1400/1564
+ Time for 100 steps:52.17
+ Total time:731.75
+Itteration 1500/1564
+ Time for 100 steps:52.18
+ Total time:783.93
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+[31/50][1564]
+                         Loss_D: 9.55 Loss_G: 42.42 Loss_KL: 4.72 Time: 820.58s
+                      
+Epoch 32 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:0.86
+ Total time:0.86
+Itteration 100/1564
+ Time for 100 steps:52.36
+ Total time:53.22
+Itteration 200/1564
+ Time for 100 steps:52.21
+ Total time:105.43
+Itteration 300/1564
+ Time for 100 steps:52.20
+ Total time:157.63
+Itteration 400/1564
+ Time for 100 steps:52.22
+ Total time:209.85
+Itteration 500/1564
+ Time for 100 steps:52.19
+ Total time:262.04
+Itteration 600/1564
+ Time for 100 steps:52.17
+ Total time:314.21
+Itteration 700/1564
+ Time for 100 steps:52.20
+ Total time:366.41
+Itteration 800/1564
+ Time for 100 steps:52.19
+ Total time:418.60
+Itteration 900/1564
+ Time for 100 steps:52.14
+ Total time:470.74
+Itteration 1000/1564
+ Time for 100 steps:52.17
+ Total time:522.91
+Itteration 1100/1564
+ Time for 100 steps:52.19
+ Total time:575.11
+Itteration 1200/1564
+ Time for 100 steps:52.16
+ Total time:627.27
+Itteration 1300/1564
+ Time for 100 steps:52.18
+ Total time:679.45
+Itteration 1400/1564
+ Time for 100 steps:52.19
+ Total time:731.64
+Itteration 1500/1564
+ Time for 100 steps:52.16
+ Total time:783.80
+[32/50][1564]
+                         Loss_D: 4.94 Loss_G: 29.87 Loss_KL: 5.61 Time: 817.25s
+                      
+Epoch 33 started
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+/gpfs/hpchome/domnich/.conda/envs/oldtorch/lib/python3.6/site-packages/torchvision/transforms/transforms.py:209: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Itteration 0/1564
+ Time for 100 steps:1.03
+ Total time:1.03
+Itteration 100/1564
+ Time for 100 steps:52.36
+ Total time:53.39
+Itteration 200/1564
+ Time for 100 steps:52.18
+ Total time:105.57
+Itteration 300/1564
+ Time for 100 steps:52.15
+ Total time:157.72
+Save G/Ds models.
+shape real_img_set  (776, 2066, 3)
+shape real_img_set with grid  torch.Size([776, 2066, 3])
+Itteration 400/1564
+ Time for 100 steps:55.38
+ Total time:213.10
+Itteration 500/1564
+ Time for 100 steps:52.18
+ Total time:265.28
+Itteration 600/1564
+ Time for 100 steps:52.20
+ Total time:317.48
+Itteration 700/1564
+ Time for 100 steps:52.14
+ Total time:369.62
+Itteration 800/1564
+ Time for 100 steps:52.16
+ Total time:421.78
+Itteration 900/1564
+ Time for 100 steps:52.20
+ Total time:473.98
+Itteration 1000/1564
+ Time for 100 steps:52.21
+ Total time:526.19
+Itteration 1100/1564
+ Time for 100 steps:52.21
+ Total time:578.40
+Itteration 1200/1564
+ Time for 100 steps:52.17
+ Total time:630.57
+Itteration 1300/1564
+ Time for 100 steps:52.19
+ Total time:682.76
+Itteration 1400/1564
+ Time for 100 steps:52.19
+ Total time:734.95
+Itteration 1500/1564
+ Time for 100 steps:52.19
+ Total time:787.14
+[33/50][1564]
+                         Loss_D: 4.17 Loss_G: 33.05 Loss_KL: 5.16 Time: 820.59s
+                      
+Epoch 34 started
