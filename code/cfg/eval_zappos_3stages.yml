@@ -1,0 +1,29 @@
+CONFIG_NAME: '3stages'
+
+DATASET_NAME: 'zappos'
+EMBEDDING_TYPE: 'simple'
+DATA_DIR: '../data/zappos'
+GPU_ID: '0'
+WORKERS: 4  # 4
+
+TREE:
+    BRANCH_NUM: 3
+
+
+TEST:
+    B_EXAMPLE: False
+
+
+TRAIN:
+    FLAG: False
+    NET_G: '../models/zappos_3stages/netG_78200.pth'
+    BATCH_SIZE: 32
+
+
+GAN:
+    EMBEDDING_DIM: 128
+    DF_DIM: 64
+    GF_DIM: 64
+    Z_DIM: 100
+    R_NUM: 2
+    B_CONDITION: True
