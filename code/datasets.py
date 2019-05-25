@@ -198,7 +198,7 @@ class TextDataset(data.Dataset):
         self.filenames = self.load_filenames(split_dir) #TODO check!
         self.embeddings = self.load_embedding(split_dir, embedding_type)
         self.class_id = self.load_class_id(split_dir, len(self.filenames)) #??
-        if not embedding_type == 'simple':
+        if not (embedding_type == 'simple' or embedding_type == 'word-cnn'):
             self.captions = self.load_all_captions()
 
         if cfg.TRAIN.FLAG:
@@ -255,6 +255,8 @@ class TextDataset(data.Dataset):
             embedding_filename = '/skip-thought-embeddings.pickle'
         elif embedding_type == 'simple':
             embedding_filename = '/simple-embeddings.pickle'
+        elif embedding_type == 'word-cnn':
+            embedding_filename = '/word-cnn-embeddings.pickle'
 
         with open(data_dir + embedding_filename, 'rb') as f:
             embeddings = pickle.load(f, encoding='bytes')
@@ -330,7 +332,11 @@ class TextDataset(data.Dataset):
             data_dir = self.data_dir
         # captions = self.captions[key]
         embeddings = self.embeddings[index, :, :] 
-        img_name = '%s/images/%s.jpg' % (data_dir, key)
+
+        if self.data_dir.find('zappos'):
+            img_name = os.path.join(data_dir, 'images', key)
+        else:
+            img_name = '%s/images/%s.jpg' % (data_dir, key)
         imgs = get_imgs(img_name, self.imsize,
                         bbox, self.transform, normalize=self.norm)
 

@@ -841,8 +841,8 @@ class condGANTrainer(object):
             print('Error: the path for morels is not found!')
         else:
             # Build and load the generator
-            if split_dir == 'test':
-                split_dir = 'valid'
+            #if split_dir == 'test':
+             #   split_dir = 'valid'
             netG = G_NET()
             netG.apply(weights_init)
             netG = torch.nn.DataParallel(netG, device_ids=self.gpus)

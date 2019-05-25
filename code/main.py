@@ -130,7 +130,7 @@ if __name__ == "__main__":
         if cfg.DATASET_NAME == 'zappos':
             dataset = TextDataset(cfg.DATA_DIR, split_dir,
                               base_size=cfg.TREE.BASE_SIZE,
-                              embedding_type = 'simple',
+                              embedding_type = cfg.EMBEDDING_TYPE,
                               transform=image_transform)
         else:
             dataset = TextDataset(cfg.DATA_DIR, split_dir,
