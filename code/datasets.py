@@ -51,7 +51,7 @@ def get_imgs(img_path, imsize, bbox=None,
     ret = []
     for i in range(cfg.TREE.BRANCH_NUM):
         if i < (cfg.TREE.BRANCH_NUM - 1):
-            re_img = transforms.Scale(imsize[i])(img)
+            re_img = transforms.Resize(imsize[i])(img)
         else:
             re_img = img
         ret.append(normalize(re_img))
@@ -198,8 +198,8 @@ class TextDataset(data.Dataset):
         self.filenames = self.load_filenames(split_dir) #TODO check!
         self.embeddings = self.load_embedding(split_dir, embedding_type)
         self.class_id = self.load_class_id(split_dir, len(self.filenames)) #??
-        if not (embedding_type == 'simple' or embedding_type == 'word-cnn'):
-            self.captions = self.load_all_captions()
+    #    if not (embedding_type == 'simple' or embedding_type == 'word-cnn'):
+     #       self.captions = self.load_all_captions()
 
         if cfg.TRAIN.FLAG:
             self.iterator = self.prepair_training_pairs #this is a func, generator

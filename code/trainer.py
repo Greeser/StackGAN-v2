@@ -345,8 +345,10 @@ class GANTrainer(object):
         return errG_total
 
     def train(self):
+        print("Try to load network")
         self.netG, self.netsD, self.num_Ds,\
             self.inception_model, start_count = load_network(self.gpus)
+        print("Network loaded")
         avg_param_G = copy_G_params(self.netG)
 
         self.optimizerG, self.optimizersD = \
@@ -695,6 +697,7 @@ class condGANTrainer(object):
             self.gradient_half = self.gradient_half.cuda()
             noise, fixed_noise = noise.cuda(), fixed_noise.cuda()
 
+        print("Start epoches!")
         predictions = []
         count = start_count
         start_epoch = start_count // (self.num_batches)
@@ -702,12 +705,16 @@ class condGANTrainer(object):
             print("Epoch {:d} started".format(epoch))
             start_t = time.time()
             start_iters = time.time()
-            N_TOTAL  = len(self.data_loader)
-
+            N_TOTAL_BATCH  = len(self.data_loader)
+         #   data_iterator = iter(self.data_loader)
+	
             for step, data in enumerate(self.data_loader, 0):
-                if step % 100 == 0:
+        #    for step in range(N_TOTAL_BATCH): #enumerate(self.data_loader, 0):
+        #        print("Iter {:d}".format(step))
+          #      data = next(data_iterator)
+                if step % 50 == 0:
                     curr_time = time.time()
-                    print("Itteration {:d}/{:d}\n Time for 100 steps:{:.2f}\n Total time:{:.2f}".format(step, N_TOTAL, curr_time - start_iters, curr_time-start_t))
+                    print("Itteration {:d}/{:d}\nTime for 50 batch steps:{:.2f}\nTotal time:{:.2f}".format(step, N_TOTAL_BATCH, curr_time - start_iters, curr_time-start_t))
                     start_iters = time.time()
 
                 #######################################################

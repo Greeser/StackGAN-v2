@@ -1,2 +1,2 @@
-python main.py --cfg=cfg/zappos_3stages.yml --gpu=0
+python main.py --cfg=cfg/zappos_3stages_word-cnn.yml --gpu=0
 
